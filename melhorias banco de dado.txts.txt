@@ -1,0 +1,128 @@
+Documentação das Melhorias:
+Configurações Iniciais:
+
+Configurações do SQL Mode, transação, e fuso horário.
+Tabela categoria_tb:
+
+categoria_id: Identificador único da categoria (auto incrementável).
+nome: Nome da categoria.
+exige_isbn: Indica se a categoria exige ISBN (0 ou 1).
+Tabela livro_tb:
+
+livro_id: Identificador único do livro (auto incrementável).
+titulo: Título do livro.
+categoria_id: Chave estrangeira referenciando a tabela categoria_tb.
+genero: Gênero do livro.
+descricao: Descrição do livro.
+estado_conservacao: Estado de conservação do livro.
+isbn: ISBN do livro (opcional).
+usuario_id: Chave estrangeira referenciando a tabela usuario_tb.
+Tabela tipousuario_tb:
+
+tipo_usuario_id: Identificador único do tipo de usuário (auto incrementável).
+descricao: Descrição do tipo de usuário.
+Tabela troca_tb:
+
+troca_id: Identificador único da troca (auto incrementável).
+livro_oferecido_id: Chave estrangeira referenciando a tabela livro_tb (livro oferecido).
+livro_desejado_id: Chave estrangeira referenciando a tabela livro_tb (livro desejado).
+status: Status da troca (Pendente, Aceita, Recusada).
+data_criacao: Data de criação da troca (timestamp automático).
+data_aceitacao: Data de aceitação da troca.
+data_conclusao: Data de conclusão da troca.
+usuario_oferecente_id: Chave estrangeira referenciando a tabela usuario_tb (usuário que oferece a troca).
+usuario_solicitante_id: Chave estrangeira referenciando a tabela usuario_tb (usuário que solicita a troca).
+Tabela usuario_tb:
+
+usuario_id: Identificador único do usuário (auto incrementável).
+nome: Nome do usuário.
+endereco: Endereço do usuário.
+data_nascimento: Data de nascimento do usuário.
+telefone: Telefone do usuário.
+cpf: CPF do usuário (único).
+rg: RG do usuário.
+email: E-mail do usuário (único).
+senha: Senha do usuário.
+tipo_usuario_id: Chave estrangeira referenciando a tabela tipousuario_tb.
+As melhorias garantem a integridade dos dados, facilitam a manipulação das informações e melhoram a eficiência das operações de consulta e manipulação de dados.
+
+
+Para criar uma regra de negócios detalhada para o banco de dados books_db, precisamos entender as funções e interações esperadas das tabelas e dos dados armazenados. A regra de negócios descreve como os dados são gerenciados, as restrições e as condições que precisam ser respeitadas. A seguir está uma análise e a criação das regras de negócios para o banco de dados.
+
+Análise do Banco de Dados
+Tabela categoria_tb:
+
+Armazena categorias de livros.
+Cada categoria pode exigir ou não um ISBN para os livros que pertencem a ela.
+A categoria_id é a chave primária e identifica unicamente cada categoria.
+Tabela livro_tb:
+
+Armazena informações sobre os livros.
+Cada livro pertence a uma categoria e é associado a um usuário.
+O campo isbn é opcional e só deve ser preenchido se a categoria do livro exigir.
+A livro_id é a chave primária e identifica unicamente cada livro.
+Tem chaves estrangeiras categoria_id e usuario_id que referenciam categoria_tb e usuario_tb respectivamente.
+Tabela tipousuario_tb:
+
+Armazena os tipos de usuários.
+A tipo_usuario_id é a chave primária e identifica unicamente cada tipo de usuário.
+Exemplos de tipos de usuários podem incluir "Administrador", "Usuário Regular", etc.
+Tabela troca_tb:
+
+Armazena informações sobre trocas de livros entre usuários.
+Cada troca envolve um livro oferecido e um livro desejado, além de dois usuários (oferecente e solicitante).
+A troca tem um status que indica seu estado atual (Pendente, Aceita, Recusada).
+A troca_id é a chave primária e identifica unicamente cada troca.
+Tem chaves estrangeiras livro_oferecido_id, livro_desejado_id, usuario_oferecente_id, e usuario_solicitante_id que referenciam livro_tb e usuario_tb respectivamente.
+Tabela usuario_tb:
+
+Armazena informações dos usuários.
+Cada usuário tem um tipo associado que define suas permissões e funções.
+A usuario_id é a chave primária e identifica unicamente cada usuário.
+O CPF e o email dos usuários são únicos para garantir que não existam duplicatas.
+Tem uma chave estrangeira tipo_usuario_id que referencia tipousuario_tb.
+Regras de Negócios
+Categoria:
+
+Cada categoria deve ter um nome único.
+O campo exige_isbn indica se os livros dessa categoria precisam ter um ISBN.
+Livro:
+
+Cada livro deve ter um título, gênero, descrição, e estado de conservação definidos.
+O categoria_id deve referenciar uma categoria existente na tabela categoria_tb.
+O usuario_id deve referenciar um usuário existente na tabela usuario_tb.
+Se a categoria do livro exigir ISBN (exige_isbn = 1), então o campo isbn não pode ser nulo.
+Tipo de Usuário:
+
+Cada tipo de usuário deve ter uma descrição que o identifique claramente.
+Exemplos de tipos de usuário podem incluir "Administrador", "Usuário Regular", "Moderador", etc.
+Troca:
+
+Uma troca deve sempre estar associada a um livro oferecido e um livro desejado.
+A troca deve envolver dois usuários: o que oferece o livro e o que solicita a troca.
+O status inicial de uma troca deve ser "Pendente".
+As datas de criação, aceitação e conclusão da troca devem ser registradas adequadamente.
+O status pode ser atualizado para "Aceita" ou "Recusada" conforme o progresso da troca.
+As chaves livro_oferecido_id e livro_desejado_id devem referenciar livros existentes na tabela livro_tb.
+As chaves usuario_oferecente_id e usuario_solicitante_id devem referenciar usuários existentes na tabela usuario_tb.
+Usuário:
+
+Cada usuário deve ter um nome, endereço, data de nascimento, telefone, CPF, RG, email e senha.
+O CPF e o email devem ser únicos entre todos os usuários para evitar duplicatas.
+O tipo_usuario_id deve referenciar um tipo de usuário existente na tabela tipousuario_tb.
+Restrições e Condições
+Integridade Referencial:
+
+Todas as chaves estrangeiras devem referenciar registros existentes nas tabelas correspondentes.
+Unicidade:
+
+Campos como CPF e email em usuario_tb devem ser únicos.
+Validação de Dados:
+
+Verificar a consistência dos dados antes de inserções ou atualizações (por exemplo, garantir que o ISBN seja fornecido quando exigido).
+Fluxo de Trabalho da Troca:
+
+Inicialmente, uma troca é criada com status "Pendente".
+O status pode ser alterado para "Aceita" ou "Recusada" com base nas ações dos usuários envolvidos.
+As datas relevantes (criação, aceitação, conclusão) devem ser registradas e mantidas.
+Estas regras de negócios asseguram que o banco de dados mantenha a integridade e a consistência dos dados, além de suportar as operações esperadas do sistema de troca de livros.
